@@ -241,13 +241,14 @@ public class OperatorAct extends Activity implements View.OnClickListener {
         obs.subscribe(s1 -> {
 
         });
-        obs.create(new Observable.Operator<String , String>(){
-
-                       @Override
-                       public Subscriber<? super String> call(Subscriber<? super String> subscriber) {
-                           return null;
-                       }
-                   };
+//        Obs
+//        obs.create(new Observable.Operator<String , String>(){
+//
+//                       @Override
+//                       public Subscriber<? super String> call(Subscriber<? super String> subscriber) {
+//                           return null;
+//                       }
+//                   };
         Observable.just("111" , "2222").map(new Func1<String, String>() {
             @Override
             public String call(String s) {
