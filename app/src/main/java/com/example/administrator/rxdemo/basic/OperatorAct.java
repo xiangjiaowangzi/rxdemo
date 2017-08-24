@@ -1,27 +1,28 @@
 package com.example.administrator.rxdemo.basic;
 
 import android.app.Activity;
+import android.content.AbstractThreadedSyncAdapter;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Looper;
 import android.view.View;
 
 import com.example.administrator.rxdemo.R;
 import com.example.administrator.rxdemo.Utils;
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.appindexing.Thing;
-import com.google.android.gms.common.api.GoogleApiClient;
 
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
+import rx.Scheduler;
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func0;
 import rx.functions.Func1;
 import rx.observers.SafeSubscriber;
+import rx.schedulers.Schedulers;
 
 
 /**
@@ -29,11 +30,8 @@ import rx.observers.SafeSubscriber;
  */
 
 public class OperatorAct extends Activity implements View.OnClickListener {
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    private GoogleApiClient client;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,9 +53,6 @@ public class OperatorAct extends Activity implements View.OnClickListener {
         findViewById(R.id.scan).setOnClickListener(this);
         findViewById(R.id.window).setOnClickListener(this);
 
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     @Override
@@ -266,7 +261,10 @@ public class OperatorAct extends Activity implements View.OnClickListener {
             public Boolean call(Object o) {
                 return true;
             }
-        }).take(1).first().subscribe(new Action1<Object>() {
+        }).take(1).first()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Object>() {
 
             @Override
             public void call(Object o) {
@@ -376,39 +374,4 @@ public class OperatorAct extends Activity implements View.OnClickListener {
         });
     }
 
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    public Action getIndexApiAction() {
-        Thing object = new Thing.Builder()
-                .setName("OperatorAct Page") // TODO: Define a title for the content shown.
-                // TODO: Make sure this auto-generated URL is correct.
-                .setUrl(Uri.parse("http://[ENTER-YOUR-URL-HERE]"))
-                .build();
-        return new Action.Builder(Action.TYPE_VIEW)
-                .setObject(object)
-                .setActionStatus(Action.STATUS_TYPE_COMPLETED)
-                .build();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client.connect();
-        AppIndex.AppIndexApi.start(client, getIndexApiAction());
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        AppIndex.AppIndexApi.end(client, getIndexApiAction());
-        client.disconnect();
-    }
 }
